@@ -148,8 +148,8 @@ product_new =  {
             "body_html":"day là quan ao da bong nha"
         }
     }
-create_entity('products',data=product_new)
 
+# create_entity('products',data=product_new)
 #c,Update: cập nhật giá, cập nhật ảnh, cập nhật số lượng (qty) cho 2 product vừa tạo.
 
 # cập nhật giá
@@ -189,17 +189,17 @@ def update_inventory_quantity(location_id, inventory_item_id, available):
     return r
 
 #  xóa các dữ liệu đã tạo
-# Để xóa dữ liệu customer thì truyền name_table = 'customers'
-# Để xóa dữ liệu order thì truyền name_table = 'orders'    
-# Để xóa dữ liệu product thì truyền name_table = 'prosucts'
-# Để xóa dữ liệu custom collection thì truyền name_table = 'custom_collections'
-# Để xóa dữ liệu smart collection thì truyền name_table = 'smart_collections'
 
-def delete_all(name_table):
-    list = requests.get(domain+'/admin/api/2024-01/{name_table}.json'.format(name_table=name_table),headers=header_values)
-    for rec in list.json()['{name_table}'.format(name_table=name_table)]:
-        endpoint = '/admin/api/2024-01/{name_table}/{rec_id}.json'.format(name_table=name_table,rec_id=rec['id'])
-        base_url = domain + endpoint
-        r = requests.delete(base_url, headers=header_values)
+def delete_all():
+    for name_table in ['products','orders','customers','smart_collections','custom_collections']:
+        list = requests.get(domain+'/admin/api/2024-01/{name_table}.json'.format(name_table=name_table),headers=header_values)
+        while len(list.json()['{name_table}'.format(name_table=name_table)]) != 0:
+            for rec in list.json()['{name_table}'.format(name_table=name_table)]:
+                endpoint = '/admin/api/2024-01/{name_table}/{rec_id}.json'.format(name_table=name_table,rec_id=rec['id'])
+                base_url = domain + endpoint
+                r = requests.delete(base_url, headers=header_values)
+            list = requests.get(domain+'/admin/api/2024-01/{name_table}.json'.format(name_table=name_table),headers=header_values)
+
+delete_all()
 
 
