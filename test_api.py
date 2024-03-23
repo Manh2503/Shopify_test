@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, time
 
 shop_creds='D:\learn\Shopify\shopify.json'
 
@@ -192,14 +192,14 @@ def update_inventory_quantity(location_id, inventory_item_id, available):
 
 def delete_all():
     for name_table in ['products','orders','customers','smart_collections','custom_collections']:
-        list = requests.get(domain+'/admin/api/2024-01/{name_table}.json'.format(name_table=name_table),headers=header_values)
+        list = requests.get(domain+'/admin/api/2024-01/{name_table}.json?limit=250'.format(name_table=name_table),headers=header_values)
         while len(list.json()['{name_table}'.format(name_table=name_table)]) != 0:
             for rec in list.json()['{name_table}'.format(name_table=name_table)]:
                 endpoint = '/admin/api/2024-01/{name_table}/{rec_id}.json'.format(name_table=name_table,rec_id=rec['id'])
                 base_url = domain + endpoint
                 r = requests.delete(base_url, headers=header_values)
             list = requests.get(domain+'/admin/api/2024-01/{name_table}.json'.format(name_table=name_table),headers=header_values)
-
+            
 delete_all()
 
 
